@@ -1,21 +1,13 @@
 import React, { ChangeEvent, useState, MouseEvent, SyntheticEvent } from 'react'
 
-type Props = {}
+interface Props {
+    onClick: (e: SyntheticEvent) => void;
+    search: string | undefined; // anticipating that state can be undefined
+    handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+}
 
-const Search : React.FC<Props> = (props: Props) : JSX.Element => {
-  const [search, setSearch] = useState<string>("");
-  
-  // 'any' allows anything to go into a function
-  // Against the purpose of TypeScript
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    console.log(e);
-  }
+const Search : React.FC<Props> = ({onClick, search, handleChange}: Props) : JSX.Element => {
 
-
-  const onClick = (e: SyntheticEvent) => {
-    console.log(e);
-  };
 
     return (
         <div>
