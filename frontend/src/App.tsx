@@ -4,10 +4,14 @@ import CardList from './Components/CardList/CardList';
 import Search from './Components/Search/Search';
 import { searchCompanies } from './api';
 import { CompanySearch } from './company';
+import ListPortfolio from './Components/Portfolio/ListPortfolio/ListPortfolio';
 
 function App() {
   // Store the user search
   const [search, setSearch] = useState<string>("");
+
+  // Portfolio values
+  const [portfolioValues, setPortfolioValues] = useState<string[]>([]);
   // Storing what we get back from the API
   const [searchResult, setSearchResult] = useState<CompanySearch[]>([]);
   // Server error state
@@ -20,9 +24,16 @@ function App() {
   }
 
   // Event handler for clicking 'Add' on a card
-  const onPortfolioCreate = (e: SyntheticEvent) => {
+  // Need to turn of TS here
+  const onPortfolioCreate = (e: any) => {
     e.preventDefault();
-    console.log(e);
+    // Checks to prevent duplicates
+    const exists = portfolioValues.find((value) => value === e.target[0].value);
+    if(exists) return;
+    // Updating the array with the new card
+    // Spread, not update
+    const updatedPortfolio = [...portfolioValues, e.target[0].value]
+    setPortfolioValues(updatedPortfolio);
   }
   // Added this so log was updated after the async
   useEffect(() => {
@@ -47,9 +58,16 @@ function App() {
   return (
     <div className="App">
       
-      <Search onSearchSubmit={onSearchSubmit} search={search} handleSearchChange={handleSearchChange}/>
+      <Search 
+        onSearchSubmit={onSearchSubmit} 
+        search={search} 
+        handleSearchChange={handleSearchChange}
+      />
+      <ListPortfolio portfolioValues={portfolioValues} />
       {serverError && <h1>{serverError}</h1>}
-      <CardList searchResults = {searchResult} onPortfolioCreate={onPortfolioCreate}/>
+      <CardList 
+        searchResults = {searchResult} 
+          onPortfolioCreate={onPortfolioCreate}/>
     </div>
   );
 }
