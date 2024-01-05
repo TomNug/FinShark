@@ -23,6 +23,10 @@ function App() {
     setSearch(e.target.value);
   }
 
+
+
+
+
   // Event handler for clicking 'Add' on a card
   // Need to turn of TS here
   const onPortfolioCreate = (e: any) => {
@@ -35,6 +39,20 @@ function App() {
     const updatedPortfolio = [...portfolioValues, e.target[0].value]
     setPortfolioValues(updatedPortfolio);
   }
+
+
+  // Difficult to pull values out, turn off TS
+  const onPortfolioDelete = (e: any) => {
+    e.preventDefault(); // Don't reload page when submitting and removing all data
+    const removed = portfolioValues.filter((value) => {
+      return value !== e.target[0].value;
+    });
+    setPortfolioValues(removed);
+  }
+
+
+
+
   // Added this so log was updated after the async
   useEffect(() => {
     console.log(searchResult);
@@ -63,7 +81,9 @@ function App() {
         search={search} 
         handleSearchChange={handleSearchChange}
       />
-      <ListPortfolio portfolioValues={portfolioValues} />
+      <ListPortfolio 
+        portfolioValues={portfolioValues} 
+        onPortfolioDelete={onPortfolioDelete} />
       {serverError && <h1>{serverError}</h1>}
       <CardList 
         searchResults = {searchResult} 
