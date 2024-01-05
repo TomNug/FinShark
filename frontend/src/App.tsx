@@ -15,16 +15,22 @@ function App() {
 
   // 'any' allows anything to go into a function
   // Against the purpose of TypeScript
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   }
 
+  // Event handler for clicking 'Add' on a card
+  const onPortfolioCreate = (e: SyntheticEvent) => {
+    e.preventDefault();
+    console.log(e);
+  }
   // Added this so log was updated after the async
   useEffect(() => {
     console.log(searchResult);
   }, [searchResult]);
 
-  const onClick = async (e: SyntheticEvent) => {
+  const onSearchSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault();
     const result = await searchCompanies(search);
     // Type checking
     if(typeof result == "string"){
@@ -41,9 +47,9 @@ function App() {
   return (
     <div className="App">
       
-      <Search onClick={onClick} search={search} handleChange={handleChange}/>
+      <Search onSearchSubmit={onSearchSubmit} search={search} handleSearchChange={handleSearchChange}/>
       {serverError && <h1>{serverError}</h1>}
-      <CardList searchResults = {searchResult}/>
+      <CardList searchResults = {searchResult} onPortfolioCreate={onPortfolioCreate}/>
     </div>
   );
 }
