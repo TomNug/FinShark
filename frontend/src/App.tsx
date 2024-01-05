@@ -11,13 +11,12 @@ function App() {
   // Storing what we get back from the API
   const [searchResult, setSearchResult] = useState<CompanySearch[]>([]);
   // Server error state
-  const [serverError, setServerError] = useState<string>("");
+  const [serverError, setServerError] = useState<string | null>(null);
 
   // 'any' allows anything to go into a function
   // Against the purpose of TypeScript
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-    console.log(e);
   }
 
   // Added this so log was updated after the async
@@ -44,7 +43,7 @@ function App() {
       
       <Search onClick={onClick} search={search} handleChange={handleChange}/>
       {serverError && <h1>{serverError}</h1>}
-      <CardList />
+      <CardList searchResults = {searchResult}/>
     </div>
   );
 }
