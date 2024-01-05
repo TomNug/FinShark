@@ -5,6 +5,8 @@ import Search from './Components/Search/Search';
 import { searchCompanies } from './api';
 import { CompanySearch } from './company';
 import ListPortfolio from './Components/Portfolio/ListPortfolio/ListPortfolio';
+import Navbar from './Components/Navbar/Navbar';
+import Hero from './Components/Hero/Hero';
 
 function App() {
   // Store the user search
@@ -75,7 +77,7 @@ function App() {
   // Need to pass it down to the components
   return (
     <div className="App">
-      
+      <Navbar />
       <Search 
         onSearchSubmit={onSearchSubmit} 
         search={search} 
