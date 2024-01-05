@@ -1,4 +1,4 @@
-import { ChangeEvent, SyntheticEvent, useState } from 'react';
+import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
 import './App.css';
 import CardList from './Components/CardList/CardList';
 import Search from './Components/Search/Search';
@@ -20,6 +20,10 @@ function App() {
     console.log(e);
   }
 
+  // Added this so log was updated after the async
+  useEffect(() => {
+    console.log(searchResult);
+  }, [searchResult]);
 
   const onClick = async (e: SyntheticEvent) => {
     const result = await searchCompanies(search);
@@ -29,7 +33,8 @@ function App() {
     } else if (Array.isArray(result.data)) {
       setSearchResult(result.data);
     }
-    console.log(searchResult);
+    // Console log wasn't waiting for the async properly
+    //console.log(searchResult);
   };
   
   // Now data is generated in the app
@@ -38,6 +43,7 @@ function App() {
     <div className="App">
       
       <Search onClick={onClick} search={search} handleChange={handleChange}/>
+      {serverError && <h1>{serverError}</h1>}
       <CardList />
     </div>
   );
