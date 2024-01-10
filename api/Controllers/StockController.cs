@@ -57,5 +57,31 @@ namespace api.Controllers
 
             return CreatedAtAction(nameof(GetById), new {id = stockModel.Id}, stockModel.ToStockDto());
         }
+
+        // FromRoute will have ID in the URL
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto){
+            var stockModel = _context.Stocks.FirstOrDefault(x => x.Id == id);
+
+            // Once retrieved, Entity starts tracking it
+            if (stockModel == null){
+                return NotFound();
+            }
+
+            // Take what's been given to the API 
+            // Turn it into the appropriate object
+            stockModel.Symbol = updateDto.Symbol;
+            stockModel.CompanyName = updateDto.CompanyName;
+            stockModel.Purchase = updateDto.Purchase;
+            stockModel.LastDiv = updateDto.LastDiv;
+            stockModel.Industry = updateDto.Industry;
+            stockModel.MarketCap = updateDto.MarketCap;
+
+            // Actually send to the database
+            _context.SaveChanges();
+
+            return Ok(stockModel.ToStockDto());
+        }
     }
 }
