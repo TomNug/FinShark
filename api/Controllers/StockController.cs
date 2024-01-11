@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos;
+using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -15,20 +17,23 @@ namespace api.Controllers
     {
         // Want DBContext to be immutable
         private readonly ApplicationDBContext _context;
-        public StockController(ApplicationDBContext context)
+        private readonly IStockRepository _stockRepository;
+        public StockController(ApplicationDBContext context, IStockRepository stockRepository)
         {
+            _stockRepository = stockRepository;
             _context = context;
         }
 
         // Get is a read, accessing data
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             // NOTE: DEFERRED EXECUTION from _context.Stocks
             // ToList() enforces IMMEDIATE EXECUTION
             // .Select is a map
-            var stocks = _context.Stocks.ToList()
-            .Select(s => s.ToStockDto());
+            var stocks = await _stockRepository.GetAllAsync();
+
+            var stockDto = stocks.Select(s => s.ToStockDto());
 
             return Ok(stocks);
         }
@@ -36,10 +41,11 @@ namespace api.Controllers
         // Detail endpoint
         // Uses MODEL BINDING to extract string, convert to int, and pass to code
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var stock = _context.Stocks.Find(id);
-            if (stock == null){
+            var stock = await _stockRepository.GetByIdAsync(id);
+            if (stock == null)
+            {
                 return NotFound();
             }
             return Ok(stock.ToStockDto());
@@ -50,52 +56,37 @@ namespace api.Controllers
         // Data will be sent in the form of JSON
         // In the body of the http
         // Not through the URL
-        public IActionResult Create([FromBody] CreateStockRequestDto stockDto){
+        public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
+        {
             var stockModel = stockDto.ToStockFromCreateDto();
-            _context.Stocks.Add(stockModel);
-            _context.SaveChanges();
-
+            await _stockRepository.CreateAsync(stockModel);
             return CreatedAtAction(nameof(GetById), new {id = stockModel.Id}, stockModel.ToStockDto());
         }
 
         // FromRoute will have ID in the URL
         [HttpPut]
         [Route("{id}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto){
-            var stockModel = _context.Stocks.FirstOrDefault(x => x.Id == id);
-
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
+        {
+            var stockModel = await _stockRepository.UpdateAsync(id, updateDto);
             // Once retrieved, Entity starts tracking it
-            if (stockModel == null){
+            if (stockModel == null)
+            {
                 return NotFound();
             }
-
-            // Take what's been given to the API 
-            // Turn it into the appropriate object
-            stockModel.Symbol = updateDto.Symbol;
-            stockModel.CompanyName = updateDto.CompanyName;
-            stockModel.Purchase = updateDto.Purchase;
-            stockModel.LastDiv = updateDto.LastDiv;
-            stockModel.Industry = updateDto.Industry;
-            stockModel.MarketCap = updateDto.MarketCap;
-
-            // Actually send to the database
-            _context.SaveChanges();
-
             return Ok(stockModel.ToStockDto());
         }
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id){
-            var stockModel = _context.Stocks.FirstOrDefault(x => x.Id == id);
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var stockModel = await _stockRepository.DeleteAsync(id);
 
-            if (stockModel == null){
+            if (stockModel == null)
+            {
                 return NotFound();
             }
-
-            _context.Stocks.Remove(stockModel);
-
-            _context.SaveChanges();
 
             // 204
             return NoContent();
