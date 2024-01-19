@@ -28,6 +28,9 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             // NOTE: DEFERRED EXECUTION from _context.Stocks
             // ToList() enforces IMMEDIATE EXECUTION
             // .Select is a map
@@ -40,9 +43,12 @@ namespace api.Controllers
 
         // Detail endpoint
         // Uses MODEL BINDING to extract string, convert to int, and pass to code
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var stock = await _stockRepository.GetByIdAsync(id);
             if (stock == null)
             {
@@ -58,6 +64,9 @@ namespace api.Controllers
         // Not through the URL
         public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var stockModel = stockDto.ToStockFromCreateDto();
             await _stockRepository.CreateAsync(stockModel);
             return CreatedAtAction(nameof(GetById), new {id = stockModel.Id}, stockModel.ToStockDto());
@@ -65,9 +74,12 @@ namespace api.Controllers
 
         // FromRoute will have ID in the URL
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var stockModel = await _stockRepository.UpdateAsync(id, updateDto);
             // Once retrieved, Entity starts tracking it
             if (stockModel == null)
@@ -78,9 +90,12 @@ namespace api.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+                
             var stockModel = await _stockRepository.DeleteAsync(id);
 
             if (stockModel == null)
