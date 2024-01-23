@@ -28,6 +28,7 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            // Triggers the DataAnnotation validations in the DTO
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -46,6 +47,7 @@ namespace api.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            // Triggers the DataAnnotation validations in the DTO
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -64,6 +66,7 @@ namespace api.Controllers
         // Not through the URL
         public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
         {
+            // Triggers the DataAnnotation validations in the DTO
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -77,6 +80,7 @@ namespace api.Controllers
         [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
         {
+            // Triggers the DataAnnotation validations in the DTO
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -93,6 +97,7 @@ namespace api.Controllers
         [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            // Triggers the DataAnnotation validations in the DTO
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
                 
