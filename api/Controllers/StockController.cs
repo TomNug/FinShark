@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -25,8 +26,9 @@ namespace api.Controllers
         }
 
         // Get is a read, accessing data
+        // Created query object which could have company name or symbol
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
             // Triggers the DataAnnotation validations in the DTO
             if (!ModelState.IsValid)
@@ -35,7 +37,8 @@ namespace api.Controllers
             // NOTE: DEFERRED EXECUTION from _context.Stocks
             // ToList() enforces IMMEDIATE EXECUTION
             // .Select is a map
-            var stocks = await _stockRepository.GetAllAsync();
+            // Pass the QueryObject to the GetAllAsync
+            var stocks = await _stockRepository.GetAllAsync(query);
 
             var stockDto = stocks.Select(s => s.ToStockDto());
 
