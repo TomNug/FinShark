@@ -84,7 +84,7 @@ namespace api.Controllers
             }
 
             
-            return CreatedAtAction(nameof(GetById), new {id = commentModel}, commentModel.ToCommentDto());
+            return CreatedAtAction(nameof(GetById), new {id = commentModel.Id}, commentModel.ToCommentDto());
         }
 
         [HttpDelete]
