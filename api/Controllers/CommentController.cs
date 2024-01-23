@@ -106,9 +106,13 @@ namespace api.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto updateDto)
         {
+            // Triggers the DataAnnotation validations in the DTO
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var comment = await _commentRepository.UpdateAsync(id, updateDto.ToCommentFromUpdate());
 
             if (comment == null)
