@@ -7,6 +7,7 @@ using api.Dtos;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +29,7 @@ namespace api.Controllers
         // Get is a read, accessing data
         // Created query object which could have company name or symbol
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
             // Triggers the DataAnnotation validations in the DTO
