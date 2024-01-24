@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace api.Models
 {
+    [Table("Stocks")]
     public class Stock
     {
+        
         public int Id { get; set; }
         // string.Empties are preventing null reference errors
         public string Symbol { get; set; } = string.Empty;
@@ -22,5 +24,6 @@ namespace api.Models
 
         // A stock has many comments
         public List<Comment> Comments {get; set; } = new List<Comment>();
+        public List<Portfolio> Portfolios {get; set;} = new List<Portfolio>();
     }
 }

@@ -9,6 +9,7 @@ namespace api.Models
     // Inherits from Identity user - all of the defaults
     public class AppUser : IdentityUser
     {
+        public List<Portfolio> Portfolios {get; set;} = new List<Portfolio>();
         
     }
 }
