@@ -1,3 +1,9 @@
-Following Teddy Smith's "React + .NET Core Finance Project" to learn React, and more about APIs, and push my web development skills.
+# FinShark
+A React front end making API calls to [financialmodelingprep.com](financialmodelingprep.com)
 
-Builds a React front end making API calls to financialmodelingprep.com
+Currently building the Web API back end.
+
+## Key Skills: 
+- ASP.NET
+- React
+- RESTful APIs
